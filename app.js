@@ -10,29 +10,42 @@ function startApp() {
   cryptoZombies = new web3js.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
 }
 
-// function to insert pickup point
-function getPickup(latitude,longitude) {
-  $("#txStatus").text("Pushing Pickup location in Blockchain");
-  return cryptoZombies.methods.getPickup(latitude,longitude).send({from: web3.eth.accounts[0]})// .send({ from: userAccount })
+//  function to insert pickup point
+// function getPickup(latitude,longitude) {
+//   $("#txStatus").text("Pushing Pickup location in Blockchain");
+//   return cryptoZombies.methods.getPickup(latitude,longitude).send({from: web3.eth.accounts[0]})// .send({ from: userAccount })
+//   .on("receipt", function(receipt) {
+//   console.log("Successfully inserted Pickup");
+//   })
+//   .on("error", function(error) {
+//     console.log(error);
+//   });
+// }
+
+// function to insert drop point
+// function getDrop(latitude,longitude) {
+//   $("#txStatus").text("Pushing Drop location in Blockchain");
+//   return cryptoZombies.methods.getDrop(latitude,longitude).send({from: web3.eth.accounts[0]})
+//   .on("receipt", function(receipt) {
+//   console.log("Successfully inserted Drop");
+//   })
+//   .on("error", function(error) {
+//     console.log(error);
+//   });
+// }
+
+function requestRide(pickup,drop) {
+  $("#txStatus").text("Pushing Drop location in Blockchain");
+  return cryptoZombies.methods.requestRide(pickup,drop).send({from: web3.eth.accounts[0]})
   .on("receipt", function(receipt) {
-  console.log("Successfully inserted Pickup");
+  console.log("Successfully inserted Passenger Details");
   })
   .on("error", function(error) {
     console.log(error);
   });
 }
 
-// function to insert drop point
-function getDrop(latitude,longitude) {
-  $("#txStatus").text("Pushing Drop location in Blockchain");
-  return cryptoZombies.methods.getDrop(latitude,longitude).send({from: web3.eth.accounts[0]})
-  .on("receipt", function(receipt) {
-  console.log("Successfully inserted Drop");
-  })
-  .on("error", function(error) {
-    console.log(error);
-  });
-}
+
 //function to insert Driver Details
 function setDriverDetails(_licenseNo,_vehicleType,_experience) {
   $("#txStatus").text("Pushing Driver Details in Blockchain");
@@ -82,11 +95,17 @@ app.post('/pickup', (req, res) => {
   console.log("Inserted Pickup Points in BlockChain");
 });
 
-app.post('/drop', (req, res) => {
-  var latitude = req.body.latitude;
-  var longitude = req.body.longitude;
-  getDrop(latitude,longitude);
-  console.log("Inserted Drop Points in BlockChain");
+app.post('/requestRide', (req, res) => {
+  var pickup = 
+  {latitude: req.body.lat1,
+   longitude: req.body.long1
+  };
+  var drop = 
+  {latitude: req.body.lat2,
+   longitude: req.body.long2
+  };
+  requestRide(pickup,drop);
+  console.log("Inserted Passenger Details in BlockChain");
 });
 
 app.post('/driverDetails', (req, res) => {
@@ -109,3 +128,4 @@ app.post('/login',(req,res)=>{
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`)
 });
+
