@@ -1,42 +1,30 @@
 const express = require('express')
 const app = express();
-const Web3 = require('web3');
+const web3 = require('web3');
+const bodyParser = require("body-parser");
+// var Contract = require('web3-eth-contract');
 const port = 8000;
 //functions
-var cryptoZombies;
+// var cryptoZombies;
 
+app.use(express.urlencoded({ extended: true }));
+var cryptoZombiesABI = require('./cryptoZombie_abi');
+
+let cryptoZombies;
+let account;
 function startApp() {
-  var cryptoZombiesAddress = "YOUR_CONTRACT_ADDRESS";
+  web3js = new web3(web3.currentProvider);
+  var cryptoZombiesAddress = "0x47315a6137f926C7c31FB1f20E4fB6D95b7061eF";
   cryptoZombies = new web3js.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
+  account = web3js.eth.accounts.create().address;
+  console.log(account);
+  // console.log(cryptoZombies.methods);
+  // web3.eth.getAccounts().then(e => {const firstAcc=e[0]; console.log(firstAcc)});
 }
 
-//  function to insert pickup point
-// function getPickup(latitude,longitude) {
-//   $("#txStatus").text("Pushing Pickup location in Blockchain");
-//   return cryptoZombies.methods.getPickup(latitude,longitude).send({from: web3.eth.accounts[0]})// .send({ from: userAccount })
-//   .on("receipt", function(receipt) {
-//   console.log("Successfully inserted Pickup");
-//   })
-//   .on("error", function(error) {
-//     console.log(error);
-//   });
-// }
-
-// function to insert drop point
-// function getDrop(latitude,longitude) {
-//   $("#txStatus").text("Pushing Drop location in Blockchain");
-//   return cryptoZombies.methods.getDrop(latitude,longitude).send({from: web3.eth.accounts[0]})
-//   .on("receipt", function(receipt) {
-//   console.log("Successfully inserted Drop");
-//   })
-//   .on("error", function(error) {
-//     console.log(error);
-//   });
-// }
 
 function requestRide(pickup,drop) {
-  $("#txStatus").text("Pushing Drop location in Blockchain");
-  return cryptoZombies.methods.requestRide(pickup,drop).send({from: web3.eth.accounts[0]})
+  return cryptoZombies.methods.requestRide(pickup,drop).send({from:account})
   .on("receipt", function(receipt) {
   console.log("Successfully inserted Passenger Details");
   })
@@ -45,11 +33,10 @@ function requestRide(pickup,drop) {
   });
 }
 
-
 //function to insert Driver Details
 function setDriverDetails(_licenseNo,_vehicleType,_experience) {
-  $("#txStatus").text("Pushing Driver Details in Blockchain");
-  return cryptoZombies.methods.setDriverDetails(_licenseNo,_vehicleType,_experience).send({from: web3.eth.accounts[0]})
+
+  return cryptoZombies.methods.setDriverDetails(_licenseNo,_vehicleType,_experience).send({from: account})
   .on("receipt", function(receipt) {
   console.log("Successfully inserted Driver Details");
   })
@@ -59,8 +46,8 @@ function setDriverDetails(_licenseNo,_vehicleType,_experience) {
 }
 
 function setUserData(object) {
-  $("#txStatus").text("Pushing User Details in Blockchain");
-  return cryptoZombies.methods.setDriverDetails(object).send({from: web3.eth.accounts[0]})
+
+  return cryptoZombies.methods.setDriverDetails(object).send({from:account})
   .on("receipt", function(receipt) {
   console.log("Successfully inserted Driver Details");
   })
@@ -83,6 +70,7 @@ app.get('/drivers', (req, res) => {
 });
 
 app.get('/driversAvailabilty', (req, res) => {
+  console.log(res.body);
   res.send(getAvailability());
 });
 
@@ -109,19 +97,21 @@ app.post('/requestRide', (req, res) => {
 });
 
 app.post('/driverDetails', (req, res) => {
-  var licenseNo = req.body.licenseNo;
-  var vehicleType = req.body.vehicleType;
-  var experience = req.body.experience;
-  setDriverDetails(licenseNo,vehicleType,experience);
-  console.log("Inserted Driver Details in BlockChain");
+  res.json({requestBody: req.body})
+  // var licenseNo = req.body.licenseNo;
+  // var vehicleType = req.body.vehicleType;
+  // var experience = req.body.experience;
+  // console.log(licenseNo , vehicleType , experience);
+  // setDriverDetails(licenseNo, vehicleType, experience);
+  // console.log("Inserted Driver Details in BlockChain");
+  console.log(req.body+"Kyu??");
+  res.send("Testing");
 });
 
 
 app.post('/login',(req,res)=>{
-
-  let type=req.body.type;
+console.log(req.body);
   setUserData(req.body);
-  
 });
 
 
