@@ -1,25 +1,25 @@
 const express = require('express')
 const app = express();
 const web3 = require('web3');
-const bodyParser = require("body-parser");
-// var Contract = require('web3-eth-contract');
-const port = 8000;
-//functions
-// var cryptoZombies;
+const port = 8080;
 
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+
 var cryptoZombiesABI = require('./cryptoZombie_abi');
 
 let cryptoZombies;
 let account;
+
 function startApp() {
-  web3js = new web3(web3.currentProvider);
+
+web3js = new web3(web3.currentProvider);
+
   var cryptoZombiesAddress = "0x47315a6137f926C7c31FB1f20E4fB6D95b7061eF";
   cryptoZombies = new web3js.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
-  account = web3js.eth.accounts.create().address;
-  console.log(account);
-  // console.log(cryptoZombies.methods);
-  // web3.eth.getAccounts().then(e => {const firstAcc=e[0]; console.log(firstAcc)});
+  if (web3js.eth.accounts[0] !== account) {
+    account = web3js.eth.create();
+  }
 }
 
 
@@ -76,6 +76,7 @@ app.get('/driversAvailabilty', (req, res) => {
 
 
 //POST routes
+
 app.post('/pickup', (req, res) => {
   var latitude = req.body.latitude;
   var longitude = req.body.longitude;
@@ -98,14 +99,14 @@ app.post('/requestRide', (req, res) => {
 
 app.post('/driverDetails', (req, res) => {
   res.json({requestBody: req.body})
-  // var licenseNo = req.body.licenseNo;
-  // var vehicleType = req.body.vehicleType;
-  // var experience = req.body.experience;
-  // console.log(licenseNo , vehicleType , experience);
-  // setDriverDetails(licenseNo, vehicleType, experience);
+  var licenseNo = req.body.licenseNo;
+  var vehicleType = req.body.vehicleType;
+  var experience = req.body.experience;
+  console.log(licenseNo , vehicleType , experience);
+  setDriverDetails(licenseNo, vehicleType, experience);
   // console.log("Inserted Driver Details in BlockChain");
-  console.log(req.body+"Kyu??");
-  res.send("Testing");
+  console.log(req.body , "Kyu??");
+
 });
 
 
