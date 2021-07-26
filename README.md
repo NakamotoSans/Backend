@@ -1,7 +1,7 @@
 # Backend
 
 This is a API running on NodeJS. The API is built to establish a connection between our App and BlockChain Network.
-With the help of ####Web3Js , we connect to the deployed Smartcontracts. 
+With the help of Web3Js , we connect to the deployed Smartcontracts. 
 We tried to implement a Microservices Architecture, where the Different Parts of the App are Deployed seperately and connected via the API only.
 
 Steps to run the Code Locally.
